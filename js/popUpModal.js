@@ -5,9 +5,7 @@ export default function popUpModal() {
   const noteTitle = document.getElementById('note-title');
   const textArea = document.getElementById('modal-textarea');
   const userNotes = document.querySelector('.user-notes');
-  
-  
-
+ 
   
   addNoteBtn.addEventListener('click', () => {
     modalOverlay.classList.add('open-modal');
@@ -16,10 +14,12 @@ export default function popUpModal() {
   modalBtn.addEventListener('click', ()=> {
     modalOverlay.classList.remove('open-modal');
     const bodyContent = `
-    <div>
-      <h1>${noteTitle.value}</h1>
-      <p>${textArea.value}</p>
-    </div>
+    <?php  foreach($user_info as $info){ ?>
+      <div>
+        <h1><?php htmlspecialchars($info['title']); ?></h1>
+        <p><?php htmlspecialchars($info['user_note']); ?></p>
+      </div>
+    <?php } ?>
     `;
     
     userNotes.innerHTML = bodyContent;
