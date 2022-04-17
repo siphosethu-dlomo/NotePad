@@ -1,0 +1,58 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  text-decoration: none;
+}
+
+/* Variables */
+:root {
+  --borderRadius: 0.25rem;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.heading-container {
+  text-align: center;
+  margin-bottom: 30px; 
+  font-size: 3rem;
+}
+
+.form-home {
+  width: 90vw;
+  max-width: 1200px;
+  text-align: center;
+}
+
+.form-home-input {
+  width: 80%;
+  margin-bottom: 24px;
+  padding: 0.675rem;
+  border-radius: var(--borderRadius);
+  border: 1px solid grey;
+  text-align: center;
+}
+
+.form-home-input::placeholder {
+  text-align: center;
+}
+
+.form-home-btn {
+  cursor: pointer;
+  color: white;
+  background: rgb(109, 109, 218);
+  border: transparent;
+  border-radius: var(--borderRadius);
+  padding: 0.375rem 0.75rem;
+  box-shadow: var(--shadow-1);
+  transition: var(--transition);
+  text-transform: capitalize;
+  display: inline-block;
+}
