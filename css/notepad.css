@@ -145,3 +145,24 @@ textarea {
   visibility: visible;
   z-index: 10;
 }
+
+.users-notes-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  padding: 20px;
+}
+
+.note-card {
+  border-radius: var(--borderRadius);
+  background-color: var(--grey-200);
+  padding: 10px;
+}
+
+.note {
+  margin: 12px 0px 12px 0px;
+}
+
+.author {
+  color: var(--primary-700);
+}

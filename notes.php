@@ -7,8 +7,8 @@
   // where form errors are stored
   $errors = array('note_title' =>'', 'user_note' => '');
 
-  // Validate notes form
-
+  // Validate notes form 
+  // when the saved button is pressed, user's note is sent to the db 
   if(isset($_POST['submit'])) {
      // checking if there is a note title
     if(empty($_POST['note_title'])) {
@@ -29,12 +29,14 @@
       // echo form error(s)
     } else {
       // saving user's data to the datbase
+
+      // taking the user's inputs to be sent to the db
       $title = mysqli_real_escape_string($db_connection, $_POST['note_title']);
       $user_note = mysqli_real_escape_string($db_connection, $_POST['user_note']);
+      $username = mysqli_real_escape_string($db_connection, $_POST['user_name']);
 
       // create sql
-      $sql = "INSERT INTO notes(title,user_note) VALUES('$title', '$user_note');";
-      $sql .= "SELECT user_name FROM notes";
+      $sql = "INSERT INTO notes(title,user_note, user_name) VALUES('$title', '$user_note', '$username');";
 
       // save to db 
       if(mysqli_multi_query($db_connection, $sql)) {
@@ -47,7 +49,7 @@
     }
   }
 
-  // getting data from db: get the user name and user note
+  // getting user data from db: get the user name and user note
 
   // construct query
   $sql = 'SELECT title, user_note, user_name FROM notes';
@@ -62,7 +64,7 @@
   mysqli_free_result($result);
 
   // close db connection
-  // mysqli_close($db_connection);
+  mysqli_close($db_connection);
 
   // print_r($user_info)
 
@@ -75,30 +77,35 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./css/notepad.css">
-  <script type="module" defer src="./js/index.js"></script>
+  <script defer src="./js/popUpModal.js"></script>
   <title>Note Pad</title>
 </head>
 <body>
   <nav class="nav-container">
-    <a href="./index.php"><h1 class="logo">NotePad</h1></a>
-    <span class="username">
-      <?php  foreach($user_info as $info){ echo htmlspecialchars($info['user_name']); }?>
-    </span>
+    <h1 class="logo">NotePad</h1>
     <button class="add-note-btn">Add Note</button>
   </nav>
   <!-- modal -->
   <div class="modal-overlay">
     <form action='notes.php' method='POST' class="modal-container">
       <h4 class="modal-title">Write Your Note...</h4>
-      <input type="text" name="note_title" id="note-title" placeholder="Note Title"/>
-      <textarea name="user_note" id="modal-textarea" placeholder="Note"></textarea>
+      <input type="text" name="user_name" id="username" placeholder="username"/>
+      <input type="text" name="note_title" id="note-title" placeholder="note title"/>
+      <textarea name="user_note" id="modal-textarea" placeholder="note"></textarea>
       <input type="submit" value="save" name='submit' class="modal-btn">
     <form>
   </div>
-  <div class="user-notnote</div>
+
+  <!-- notes output -->
+  <div class="users-notes-container">
+    <?php  foreach($user_info as $info){ ?>
+      <div class="note-card">
+        <h1 class="note-title" ><?php echo htmlspecialchars($info['title']); ?></h1>
+        <p class="note"><?php echo htmlspecialchars($info['user_note']); ?></p>
+        <small class="author" ><?php echo htmlspecialchars($info['user_name']); ?></small>
+      </div>
+    <?php } ?>
+  </div>
+
 </body>
 </html>
-
-
-<!-- option: separate page - notes page [form], entry name [start page] and output page [rendered data] -->
-<!-- from the start page, redirect to notes page [form] then from there go to rendered data page -->
