@@ -4,22 +4,34 @@
 
   // SAVING NOTES TO THE DB:
   
+  // for persisting form data
+  $user_name = '';
+  $note_title = '';
+  $user_note = '';
+
   // where form errors are stored
-  $errors = array('note_title' =>'', 'user_note' => '');
+  $errors = array('note_title' =>'', 'user_note' => '', 'user_name' =>'');
 
   // Validate notes form 
   // when the saved button is pressed, user's note is sent to the db 
   if(isset($_POST['submit'])) {
+    // check if there is a username
+    if(empty($_POST['user_name'])) {
+      $errors['user_name'] = 'username required';
+    } else {
+      $user_name = htmlspecialchars($_POST['user_name']);
+    }
+
      // checking if there is a note title
     if(empty($_POST['note_title'])) {
-      $errors['note_title'] = 'note title required <br />';
+      $errors['note_title'] = 'note title required';
     } else {
       $note_title = htmlspecialchars($_POST['note_title']);
     }
 
     // check if there is a note
     if(empty($_POST['user_note'])) {
-      $errors['user_note'] = 'You forget to write your note <br />';
+      $errors['user_note'] = 'you forget to write your note';
     } else {
       $user_note = htmlspecialchars($_POST['user_note']);
     }
@@ -49,10 +61,10 @@
     }
   }
 
-  // getting user data from db: get the user name and user note
+  // GETTING USER DATA FROM DB: GET THE USER THE USER'S NAME AND USER'S NOTE 
 
   // construct query
-  $sql = 'SELECT title, user_note, user_name FROM notes';
+  $sql = 'SELECT title, user_note, user_name, id FROM notes';
 
   // make query and get results
   $result = mysqli_query($db_connection, $sql);
@@ -60,13 +72,27 @@
   // fetch the resulting rows as an array
   $user_info = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-  // free memory [result]
-  mysqli_free_result($result);
 
-  // close db connection
-  mysqli_close($db_connection);
+  // DELETE NOTE
+  if(isset($_POST['delete'])) {
+    $id_to_delete = mysqli_real_escape_string($db_connection, $_POST['id_to_delete']);
 
-  // print_r($user_info)
+    $sql = "DELETE FROM notes WHERE id = $id_to_delete";
+
+    if(mysqli_query($db_connection, $sql)) {
+      // success
+      header('Location: notes.php');
+    } else {
+      // failure
+      echo 'quary error: ' . mysqli_error($db_connection);
+    }
+
+    // free memory [result]
+    mysqli_free_result($result);
+
+    // close db connection
+    mysqli_close($db_connection);
+  }
 
 ?>
 
@@ -89,9 +115,16 @@
   <div class="modal-overlay">
     <form action='notes.php' method='POST' class="modal-container">
       <h4 class="modal-title">Write Your Note...</h4>
-      <input type="text" name="user_name" id="username" placeholder="username"/>
-      <input type="text" name="note_title" id="note-title" placeholder="note title"/>
-      <textarea name="user_note" id="modal-textarea" placeholder="note"></textarea>
+
+      <p class="error"><?php echo htmlspecialchars($errors['user_name']); ?></p>
+      <input type="text" name="user_name" id="username" placeholder="username" value="<?php echo $user_name ?>"/>
+
+      <p class="error"><?php echo htmlspecialchars($errors['note_title']); ?></p>
+      <input type="text" name="note_title" id="note-title" placeholder="note title" value="<?php echo $note_title ?>"/>
+
+      <p class="error"><?php echo htmlspecialchars($errors['user_note']); ?></p>
+      <textarea name="user_note" id="modal-textarea" placeholder="note" value="<?php echo $user_note ?>"></textarea>
+
       <input type="submit" value="save" name='submit' class="modal-btn">
     <form>
   </div>
@@ -103,7 +136,13 @@
         <h1 class="note-title" ><?php echo htmlspecialchars($info['title']); ?></h1>
         <p class="note"><?php echo htmlspecialchars($info['user_note']); ?></p>
         <small class="author" ><?php echo htmlspecialchars($info['user_name']); ?></small>
+        <form action="notes.php" method="POST">
+          <input type="hidden" name="id_to_delete" value="<?php echo htmlspecialchars($info['id']); ?>" />
+          <input type="submit" name="delete" value="Delete" class="delete-btn" />
+        </form>
       </div>
+
+
     <?php } ?>
   </div>
 
