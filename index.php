@@ -53,7 +53,7 @@
       // save to db 
       if(mysqli_multi_query($db_connection, $sql)) {
         // success, redirect to page
-        header('Location: notes.php');
+        header('Location: index.php');
       } else {
         // error
         echo 'query error: ' . mysqli_error($db_connection);
@@ -81,7 +81,7 @@
 
     if(mysqli_query($db_connection, $sql)) {
       // success
-      header('Location: notes.php');
+      header('Location: index.php');
     } else {
       // failure
       echo 'quary error: ' . mysqli_error($db_connection);
@@ -113,7 +113,7 @@
   </nav>
   <!-- modal -->
   <div class="modal-overlay">
-    <form action='notes.php' method='POST' class="modal-container">
+    <form action='index.php' method='POST' class="modal-container">
       <h4 class="modal-title">Write Your Note...</h4>
 
       <p class="error"><?php echo htmlspecialchars($errors['user_name']); ?></p>
@@ -136,7 +136,7 @@
         <h1 class="note-title" ><?php echo htmlspecialchars($info['title']); ?></h1>
         <p class="note"><?php echo htmlspecialchars($info['user_note']); ?></p>
         <small class="author" ><?php echo htmlspecialchars($info['user_name']); ?></small>
-        <form action="notes.php" method="POST">
+        <form action="index.php" method="POST">
           <input type="hidden" name="id_to_delete" value="<?php echo htmlspecialchars($info['id']); ?>" />
           <input type="submit" name="delete" value="Delete" class="delete-btn" />
         </form>
